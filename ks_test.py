@@ -16,16 +16,18 @@ import matplotlib.pyplot as plt
 from scipy.stats import skewnorm
 
 def c(alpha):
+    # part of critical function to calculate critical value
     ret = np.sqrt(-1 / 2.0 * np.log(alpha / 2.0))
     return ret
 
 if __name__ == "__main__":
+    # Part 1:
     # input arguments
     n_w = 80
     n_m = 62
     alpha = 0.05
-    skew_w = 0.5
-    skew_m = 0.4
+    skew_w = 1
+    skew_m = -1
     
     # generate data
     w = skewnorm.rvs(skew_w, size = n_w)
@@ -61,6 +63,35 @@ if __name__ == "__main__":
     ax.plot(wnm, cum_w, 'r')
     ax.plot(wnm, cum_m, 'b')
     ax.plot(wnm, (wnm == wnm[max_ix]), 'k')
-    plt.show()
+#    plt.show()
+    
+    # Part 2:
+    # input arguments
+    n_bin = 10
+    
+    # construct bins to count the frequency
+    bins = np.arange(wnm[0], wnm[-1], (wnm[-1] - wnm[0]) / n_bin)
+    
+    # calculate density
+    dens_w = np.array([((w <= bins[i+1]) * (w >= bins[i])).sum() / n_w for i in range(n_bin-1)])
+    dens_m = np.array([((m <= bins[i+1]) * (m >= bins[i])).sum() / n_m for i in range(n_bin-1)])
+    
+    # calculate cumulation
+    cum_w_d = np.cumsum(dens_w)
+    cum_m_d = np.cumsum(dens_m)
+    cum_w_d = np.r_[0, cum_w_d]
+    cum_m_d = np.r_[0, cum_m_d]
+
+    # plot the cumulative chart
+#    fig, ax = plt.subplots(1)
+    ax.plot(bins, cum_w_d, 'p')
+    ax.plot(bins, cum_m_d, 'y')
+    plt.show()    
+        
+    
+    
+
+
+
     
     
